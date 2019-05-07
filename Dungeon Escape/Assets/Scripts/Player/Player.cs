@@ -35,6 +35,7 @@ public class Player : MonoBehaviour, IDamagable
     void Update()
     {
 		Move();
+		//Debug.Log($"Input.GetKeyDown(KeyCode.Mouse0) + {isGrounded()}");
 		if (Input.GetKeyDown(KeyCode.Mouse0) && isGrounded())
 		{
 			_anim.Attack(true);

@@ -23,19 +23,19 @@ public class Spider :Enemy, IDamagable
 	public void Damage()
 	{
 		Debug.Log($"Damaged {this.name}");
-		//Health--;
+		Health--;
 		//_anim.SetBool("InCombat", true);
 		//_anim.SetTrigger("Hit");
 		//isHit = true;
 
-		//if (Health <= 0)
-		//{
-		//	EnemyDeath();
-		//}
+		if (Health <= 0)
+		{
+			EnemyDeath();
+		}
 	}
 
 	public override void Attack()
 	{
-		Instantiate(AcidEffectPrefab, transform.position, Quaternion.identity);
+		Instantiate(AcidEffectPrefab, transform.localPosition, Quaternion.identity);
 	}
 }
