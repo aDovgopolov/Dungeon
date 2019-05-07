@@ -38,6 +38,11 @@ public class PlayerAnimation : MonoBehaviour
 			//Debug.Log("Stop trigger");
 			//animator.ResetTrigger("Attack trigger");
 		}
-		
+	}
+
+	public void animateDeath()
+	{
+		//Debug.Log($"Jump = {value}");
+		animator.SetTrigger("Death");
 	}
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour
 {
+	public GameObject diamondPrefab;
 	[SerializeField]
 	protected int health;
 	[SerializeField]
@@ -20,6 +21,7 @@ public abstract class Enemy : MonoBehaviour
 	protected Animator _anim;
 	protected Player player;
 	protected bool isHit = false;
+	private bool isDead = false;
 
 	public virtual void Attack() {
 		Debug.Log("Parent method");
@@ -35,7 +37,8 @@ public abstract class Enemy : MonoBehaviour
 			return;
 		}
 
-		Movement();
+		if(!isDead)
+			Movement();
 	}
 
 	protected virtual void Init() {
@@ -71,7 +74,7 @@ public abstract class Enemy : MonoBehaviour
 		}
 
 		float distance = Vector3.Distance(transform.localPosition, player.transform.localPosition);
-		//Debug.Log(_anim.GetBool("InCombat"));
+
 		if (distance > 2 && _anim.GetBool("InCombat"))
 		{
 			isHit = false;
@@ -81,23 +84,26 @@ public abstract class Enemy : MonoBehaviour
 		Vector3 direction = player.transform.position - transform.position;
 		if (_anim.GetBool("InCombat") && direction.x < 0)
 		{
-			//Debug.Log("_sprite.flipX = true");
 			_sprite.flipX = true;
 		}
 		else if (_anim.GetBool("InCombat") && direction.x > 0)
 		{
-			//Debug.Log("_sprite.flipX = false");
 			_sprite.flipX = false;
 		}
 	}
 
 	public void MakeAnimation() {
-		//Debug.Log("MakeAnimation");
 		_anim.Play("Idle");
 	}
 
 	protected void EnemyDeath()
 	{
-		Destroy(this.gameObject);
+		if (isDead)
+			return;
+
+		isDead = true;
+		_anim.SetTrigger("Death");
+		GameObject diamonds = Instantiate(diamondPrefab, transform.localPosition, Quaternion.identity) as GameObject;
+		diamonds.GetComponent<Diamond>().gems = gems;
 	}
 }

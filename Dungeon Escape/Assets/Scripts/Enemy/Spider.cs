@@ -23,15 +23,7 @@ public class Spider :Enemy, IDamagable
 	public void Damage()
 	{
 		Debug.Log($"Damaged {this.name}");
-		Health--;
-		//_anim.SetBool("InCombat", true);
-		//_anim.SetTrigger("Hit");
-		//isHit = true;
-
-		if (Health <= 0)
-		{
-			EnemyDeath();
-		}
+		EnemyDeath();
 	}
 
 	public override void Attack()

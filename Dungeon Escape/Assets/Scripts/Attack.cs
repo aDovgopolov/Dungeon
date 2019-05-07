@@ -5,8 +5,8 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
 	private bool switch_attack = true;
+
 	private void OnTriggerEnter2D(Collider2D collision) {
-		
 		IDamagable hit = collision.GetComponent<IDamagable>();
 		//Debug.Log($"Enter :{collision.name}");
 		//Debug.Log($"hit = {hit}");

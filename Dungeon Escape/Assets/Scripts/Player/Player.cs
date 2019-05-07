@@ -8,6 +8,8 @@ public class Player : MonoBehaviour, IDamagable
 	private PlayerAnimation _anim;
 	private SpriteRenderer _sprite;
 	private SpriteRenderer _sword_arc;
+	private Transform hit_box;
+	public int diamonds = 0;
 
 	private bool resetJumpNeeded = true;
 	[SerializeField]
@@ -18,6 +20,7 @@ public class Player : MonoBehaviour, IDamagable
 	private LayerMask _groundMast;
 	[SerializeField]
 	private float _speed = 5.0f;
+	private bool isDead = false;
 
 	public int Health
 	{
@@ -30,13 +33,15 @@ public class Player : MonoBehaviour, IDamagable
 		_anim = GetComponent<PlayerAnimation>();
 		_sprite = GetComponentInChildren<SpriteRenderer>();
 		_sword_arc = transform.GetChild(1).GetComponent<SpriteRenderer>();
+		hit_box = _sprite.GetComponentInChildren<Transform>();
 	}
 	 
     void Update()
-    {
-		Move();
-		//Debug.Log($"Input.GetKeyDown(KeyCode.Mouse0) + {isGrounded()}");
-		if (Input.GetKeyDown(KeyCode.Mouse0) && isGrounded())
+    {	
+		if(!isDead)
+			Move();
+
+		if (Input.GetKeyDown(KeyCode.Mouse0) && IsGrounded())
 		{
 			_anim.Attack(true);
 			StartCoroutine(ResetAttackTrigger());
@@ -45,19 +50,20 @@ public class Player : MonoBehaviour, IDamagable
 
 	public void Move() {
 		float horizontalInput = Input.GetAxisRaw("Horizontal");
-		_grounded = isGrounded();
-
-		//Filp(horizontalInput);
+		_grounded = IsGrounded();
+		
 		if (horizontalInput > 0)
 		{
 			Flip(true);
+			FlipHitBox(true);
 		}
 		else if (horizontalInput < 0)
 		{
 			Flip(false);
+			FlipHitBox(false);
 		}
 
-		if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
 		{
 			rgb2d.velocity = new Vector2(rgb2d.velocity.x, jumpForce);
 			StartCoroutine(ResetJumpNeededRoutine());
@@ -66,6 +72,23 @@ public class Player : MonoBehaviour, IDamagable
 
 		rgb2d.velocity = new Vector2(horizontalInput * _speed, rgb2d.velocity.y);
 		_anim.Run(horizontalInput);
+	}
+
+	private void FlipHitBox(bool facaRight)
+	{
+		Debug.Log(facaRight);
+		if (facaRight)
+		{
+			Vector2 newPos = hit_box.transform.localPosition;
+			newPos.x = hit_box.transform.localPosition.x;
+			hit_box.transform.localPosition = newPos;
+		}
+		else if (!facaRight)
+		{
+			Vector2 newPos = hit_box.transform.localPosition;
+			newPos.x = -hit_box.transform.localPosition.x;
+			hit_box.transform.localPosition = newPos;
+		}
 	}
 
 	private void Flip(bool faceRight) {
@@ -90,8 +113,7 @@ public class Player : MonoBehaviour, IDamagable
 		}
 	}
 
-
-	private bool isGrounded() {
+	private bool IsGrounded() {
 		RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, _groundMast);
 
 		if (hitInfo.collider != null)
@@ -132,7 +154,8 @@ public class Player : MonoBehaviour, IDamagable
 
 	public void Damage()
 	{
-		//throw new System.NotImplementedException();
 		Debug.Log("Player::Damage");
+		//isDead = true;
+		_anim.animateDeath();
 	}
 }

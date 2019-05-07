@@ -25,7 +25,7 @@ public class Skeleton :Enemy, IDamagable
 
 		if (Health <= 0)
 		{
-			base.EnemyDeath();
+			EnemyDeath();
 		}
 	}
 }
