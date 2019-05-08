@@ -14,7 +14,7 @@ public class Spider_event : MonoBehaviour
 
 	public void Fire()
 	{
-		Debug.Log("Spider fire Event");
+		//Debug.Log("Spider fire Event");
 		spider.Attack();
 	}   
 }
