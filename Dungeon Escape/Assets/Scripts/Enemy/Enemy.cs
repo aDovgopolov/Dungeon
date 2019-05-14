@@ -31,14 +31,15 @@ public abstract class Enemy : MonoBehaviour
 		Init();
 	}
 
-	public virtual void Update() {
+	public virtual void Update()
+	{
+		if (!isDead)
+			Movement();
+
 		if (this._anim.GetCurrentAnimatorStateInfo(0).IsName("Idle") && _anim.GetBool("InCombat") == false)
 		{
 			return;
 		}
-
-		if(!isDead)
-			Movement();
 	}
 
 	protected virtual void Init() {

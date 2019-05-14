@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Player : MonoBehaviour, IDamagable
 {
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour, IDamagable
 		_sprite = GetComponentInChildren<SpriteRenderer>();
 		_sword_arc = transform.GetChild(1).GetComponent<SpriteRenderer>();
 		hit_box = _sprite.GetComponentInChildren<Transform>();
+		Health = 4;
 	}
 	 
     void Update()
@@ -41,7 +43,7 @@ public class Player : MonoBehaviour, IDamagable
 		if(!isDead)
 			Move();
 
-		if (Input.GetKeyDown(KeyCode.Mouse0) && IsGrounded())
+		if (CrossPlatformInputManager.GetButtonDown("A_Button") && IsGrounded())
 		{
 			_anim.Attack(true);
 			StartCoroutine(ResetAttackTrigger());
@@ -49,7 +51,7 @@ public class Player : MonoBehaviour, IDamagable
 	}
 
 	public void Move() {
-		float horizontalInput = Input.GetAxisRaw("Horizontal");
+		float horizontalInput = CrossPlatformInputManager.GetAxis("Horizontal");// Input.GetAxisRaw("Horizontal");
 		_grounded = IsGrounded();
 		
 		if (horizontalInput > 0)
@@ -63,7 +65,7 @@ public class Player : MonoBehaviour, IDamagable
 			FlipHitBox(false);
 		}
 
-		if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+		if ((Input.GetKeyDown(KeyCode.Space) || CrossPlatformInputManager.GetButtonDown("B_Button")) && IsGrounded())
 		{
 			rgb2d.velocity = new Vector2(rgb2d.velocity.x, jumpForce);
 			StartCoroutine(ResetJumpNeededRoutine());
@@ -76,7 +78,7 @@ public class Player : MonoBehaviour, IDamagable
 
 	private void FlipHitBox(bool facaRight)
 	{
-		Debug.Log(facaRight);
+		//Debug.Log(facaRight);
 		if (facaRight)
 		{
 			Vector2 newPos = hit_box.transform.localPosition;
@@ -153,9 +155,26 @@ public class Player : MonoBehaviour, IDamagable
 	}
 
 	public void Damage()
-	{
+	{	
+		if(Health < 1)
+		{
+			return;
+		}
+
 		Debug.Log("Player::Damage");
-		//isDead = true;
-		_anim.animateDeath();
+		Health--;
+		UIManager.Instance.UpdateLifePanel(Health);
+
+		if (Health <= 0)
+		{
+			_anim.animateDeath();
+			isDead = true;
+		}
+	}
+
+	public void AddGems(int amount)
+	{
+		diamonds += amount;
+		UIManager.Instance.UpdateGemCount(diamonds);
 	}
 }

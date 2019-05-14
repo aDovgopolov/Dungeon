@@ -17,6 +17,11 @@ public class Skeleton :Enemy, IDamagable
 
 	public void Damage()
 	{
+		if (Health < 1)
+		{
+			return;
+		}
+
 		Debug.Log($"Damaged {this.name}");
 		Health--;
 		_anim.SetBool("InCombat", true);
