@@ -5,6 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+
+	void Awake()
+	{
+		Screen.orientation = ScreenOrientation.Landscape;
+	}
+
+
 	public void StartGame()
 	{
 		SceneManager.LoadScene("Game");
